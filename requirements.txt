@@ -1,0 +1,8 @@
+setuptools>=69.0.0  # Required for pkg_resources
+requests>=2.31.0
+tqdm>=4.66.0
+beautifulsoup4>=4.12.0
+urllib3>=2.0.0
+Jinja2>=3.0.0
+playwright>=1.40.0  # For browser automation
+playwright-stealth>=1.0.0  # For bypassing bot detection

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Brightwheel Archive - Page {{ current_page }}{% endblock %}
+
+{% block content %}
+    <h2>Feed Entries (Page {{ current_page }} of {{ total_pages }})</h2>
+    {% for entry in entries %}
+    <div class="feed-entry">
+        <div class="entry-header">
+            {% set actor = entry.original_data.actor %}
+            <div class="actor-avatar">
+                {% if entry.original_data.target.profile_photo %}
+                    {% for media_item in entry.downloaded_media %}
+                        {% if media_item.original_url == entry.original_data.target.profile_photo.thumbnail_url %}
+                            <img src="../images/{{ media_item.filename }}" alt="Student Avatar">
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+            <div>
+                <div class="actor-name">{{ actor.first_name }} {{ actor.last_name }}</div>
+                <div class="entry-meta">
+                    <span class="action-type">{{ entry.original_data.action_type | replace('ac_', '') | replace('_', ' ') | title }}</span> -
+                    <span>{{ entry.original_data.event_date }}</span>
+                    {% if entry.original_data.room %}
+                        - <span>Room: {{ entry.original_data.room.name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="entry-content">
+            {% if entry.original_data.note %}
+                <div class="entry-note">{{ entry.original_data.note }}</div>
+            {% endif %}
+            <div class="entry-media">
+                {% for media in entry.downloaded_media %}
+                    {% if media.type == 'image' and 'thumbnail' not in media.url_type %}
+                        <img src="../images/{{ media.filename }}" alt="Feed Image">
+                    {% elif media.type == 'video' %}
+                        {% set poster_url = '' %}
+                        {% for thumb in entry.downloaded_media %}
+                            {% if thumb.type == 'image' and thumb.url_type == 'video_thumbnail_url' %}
+                                {% set poster_url = '../images/' + thumb.filename %}
+                            {% endif %}
+                        {% endfor %}
+                        <video controls poster="{{ poster_url }}">
+                            <source src="../videos/{{ media.filename }}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <p>No entries found for this page.</p>
+    {% endfor %}
+{% endblock %}
+
+{% block pagination %}
+<div class="pagination">
+    {% if current_page > 1 %}
+        <a href="feed_page_{{ current_page - 1 }}.html">&laquo; Previous</a>
+    {% endif %}
+
+    <span class="current">Page {{ current_page }} of {{ total_pages }}</span>
+
+    {% if current_page < total_pages %}
+        <a href="feed_page_{{ current_page + 1 }}.html">Next &raquo;</a>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Brightwheel Archive{% endblock %}</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; margin: 20px; background-color: #f4f4f4; color: #333; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .feed-entry { border-bottom: 1px solid #eee; padding: 15px 0; margin-bottom: 15px; }
+        .feed-entry:last-child { border-bottom: none; margin-bottom: 0; }
+        .entry-header { display: flex; align-items: center; margin-bottom: 10px; }
+        .actor-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background-color: #ddd;
+            position: relative;
+            overflow: hidden;
+        }
+        .actor-avatar:before {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #fff;
+            border-radius: 50%;
+            top: 6px;
+            left: 8px;
+        }
+        .actor-avatar:after {
+            content: '';
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            border-radius: 50%;
+            bottom: -16px;
+            left: 4px;
+        }
+        .actor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: relative;
+            z-index: 1;
+        }
+        .actor-name { font-weight: bold; }
+        .entry-meta { color: #666; font-size: 0.9em; margin-left: 50px; /* Align with text below avatar */ }
+        .entry-content { margin-left: 50px; }
+        .entry-note { margin-top: 10px; background-color: #f9f9f9; padding: 10px; border-radius: 4px; }
+        .entry-media img, .entry-media video { max-width: 100%; height: auto; display: block; margin-top: 10px; border-radius: 4px; }
+        .pagination { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
+        .pagination a { margin: 0 5px; text-decoration: none; padding: 5px 10px; border: 1px solid #ddd; border-radius: 3px; color: #007bff; }
+        .pagination a:hover { background-color: #eee; }
+        .pagination .current { font-weight: bold; color: #333; }
+        .action-type { font-style: italic; color: #555; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Brightwheel Feed Archive</h1>
+        {% block content %}
+        {% endblock %}
+
+        {% block pagination %}
+        {% endblock %}
+    </div>
+</body>
+</html>
