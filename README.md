@@ -36,7 +36,6 @@ uv pip install -r requirements.txt
 ```
 
 3. Create a config.json file (see config.example.json)
-
 ## Usage
 
 ### Scraping Content
