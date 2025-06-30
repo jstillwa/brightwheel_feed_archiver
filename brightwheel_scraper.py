@@ -783,17 +783,39 @@ class BrightwheelScraper:
             logger.info(f"\nDownload interrupted by user for student {student_name}. Saving progress...")
         
         finally:
-            # Save student-specific index
+            # --- MODIFIED: Load existing entries and merge ---
             index_path = child_feeds_dir / 'feed_index.json'
+            existing_entries = []
+            if index_path.exists():
+                try:
+                    with open(index_path, 'r') as f:
+                        existing_data = json.load(f)
+                        # Make sure we have a list of entries
+                        if isinstance(existing_data.get('entries'), list):
+                            existing_entries = existing_data['entries']
+                except (json.JSONDecodeError, IOError) as e:
+                    logger.warning(f"Could not read or parse existing index file at {index_path}. A new one will be created. Error: {e}")
+
+            # Create a dictionary of existing entry IDs for quick lookup
+            existing_entry_ids = {entry['id'] for entry in existing_entries}
+
+            # Add only new, unique entries to the list
+            merged_entries = existing_entries + [entry for entry in all_entries_for_student if entry['id'] not in existing_entry_ids]
+            
+            # Sort the merged list by event date, newest first
+            merged_entries.sort(key=lambda x: x.get('original_data', {}).get('event_date', '0000'), reverse=True)
+
+            # Save the updated student-specific index
             with open(index_path, 'w') as f:
                 json.dump({
                     'student_id': student_id,
                     'student_name': student_name,
-                    'total_entries_scraped': len(all_entries_for_student),
+                    'total_entries_scraped_this_run': len(all_entries_for_student),
+                    'total_entries_in_archive': len(merged_entries),
                     'total_entries_available': total_entries, # May be None if first page failed
-                    'pages_scraped': page - 1,
-                    'scraped_date': datetime.now().isoformat(),
-                    'entries': all_entries_for_student # Contains processed entries with downloaded media info
+                    'pages_scraped_this_run': page - 1,
+                    'last_scraped_date': datetime.now().isoformat(),
+                    'entries': merged_entries # Contains all processed entries
                 }, f, indent=2)
                 
             logger.warning(f"Completed scraping {len(all_entries_for_student)} entries across {page-1} pages for {student_name}")
