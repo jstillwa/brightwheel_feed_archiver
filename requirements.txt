@@ -1,4 +1,4 @@
-setuptools>=69.0.0  # Required for pkg_resources
+setuptools>=82.0.1  # Required for pkg_resources
 requests>=2.31.0
 tqdm>=4.66.0
 beautifulsoup4>=4.12.0
